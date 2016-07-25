@@ -2,13 +2,13 @@ package matchgame;
 
 import display.Display;
 import gfx.Assets;
+import input.MouseManager;
 import states.GameState;
 import states.MenuState;
 import states.State;
 import states.StateManager;
 import world.World;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
@@ -22,7 +22,6 @@ public class Game implements Runnable{
     private int width, height;
 
     private Display display;
-    private World world;
 
     private Thread thread;
     private boolean running =false;
@@ -30,26 +29,40 @@ public class Game implements Runnable{
     private BufferStrategy bufferStrategy;
     private Graphics g;
 
+    private World world;
 
     //States
     private State gameState;
     private State menuState;
+
+    //input
+    private MouseManager mouseManager;
 
 
     public Game(String title, int width, int height){
         this.title=title;
         this.width=width;
         this.height=height;
+        mouseManager=new MouseManager();
     }
 
     private void init(){
         display=new Display(title, width, height);
+        display.getCanvas().addMouseListener(mouseManager);
+        display.addMouseMotionListener(mouseManager);
+        display.addMouseListener(mouseManager);
+        display.addMouseMotionListener(mouseManager);
 
         Assets.init();
+        world=new World(this, "res/level1.txt");
+//      world=new World(this);
+
+
         gameState=new GameState(this);
         menuState=new MenuState(this);
 
         StateManager.setCurrentState(gameState);
+
     }
 
     @Override
@@ -62,7 +75,6 @@ public class Game implements Runnable{
             render();
         }
 
-        stop();
     }
 
     public synchronized void start(){
@@ -75,18 +87,6 @@ public class Game implements Runnable{
     }
 
 
-    public synchronized void stop(){
-        if(!running)
-            return;
-        running=false;
-
-        try{
-            thread.join(); //close thread
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
-    }
-
 
     private void tick(){
         if(StateManager.getCurrentState()!=null)
@@ -95,13 +95,13 @@ public class Game implements Runnable{
 
     private void render(){
         bufferStrategy=display.getCanvas().getBufferStrategy();
-
         if(bufferStrategy==null){
             display.getCanvas().createBufferStrategy(3);
             return;
         }
 
         g=bufferStrategy.getDrawGraphics();
+
         //Clear Screen
         g.clearRect(0,0,width,height);
 
@@ -110,6 +110,8 @@ public class Game implements Runnable{
         if(StateManager.getCurrentState()!=null)
             StateManager.getCurrentState().render(g);
 
+   //     g.fillRect(getMouseManager().getMouseX(), getMouseManager().getMouseY(), 10, 10);//////////////////////////////////////
+
 
         //End
 
@@ -117,4 +119,7 @@ public class Game implements Runnable{
         g.dispose();
     }
 
+    public MouseManager getMouseManager() {
+        return mouseManager;
+    }
 }

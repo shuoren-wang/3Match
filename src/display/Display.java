@@ -6,15 +6,14 @@ import java.awt.*;
 /**
  * Created by shuorenwang on 2016-07-20.
  */
-public class Display {
-    private JFrame frame;
+public class Display extends JFrame{
     private Canvas canvas;
 
     private String title;
     private int width, height;
 
     public Display(String title, int width, int height){
-        this.title=title;
+        super(title);
         this.width=width;
         this.height=height;
 
@@ -22,12 +21,12 @@ public class Display {
     }
 
     private void createDisplay(){
-        frame=new JFrame(title);
-        frame.setSize(width,height);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+
+        setSize(width,height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
 
         canvas=new Canvas();
         canvas.setSize(new Dimension(width,height));
@@ -35,13 +34,10 @@ public class Display {
         canvas.setMinimumSize(new Dimension(width,height));
         canvas.setFocusable(false);
 
-        frame.add(canvas);
-        frame.pack();
+        add(canvas);
+        pack();
     }
 
-    public JFrame getFrame() {
-        return frame;
-    }
 
     public Canvas getCanvas() {
         return canvas;
