@@ -2,6 +2,10 @@ package matchgame;
 
 import display.Display;
 import gfx.Assets;
+import states.GameState;
+import states.MenuState;
+import states.State;
+import states.StateManager;
 import world.World;
 
 import java.awt.Color;
@@ -27,6 +31,11 @@ public class Game implements Runnable{
     private Graphics g;
 
 
+    //States
+    private State gameState;
+    private State menuState;
+
+
     public Game(String title, int width, int height){
         this.title=title;
         this.width=width;
@@ -37,7 +46,10 @@ public class Game implements Runnable{
         display=new Display(title, width, height);
 
         Assets.init();
-        world=new World();
+        gameState=new GameState(this);
+        menuState=new MenuState(this);
+
+        StateManager.setCurrentState(gameState);
     }
 
     @Override
@@ -76,7 +88,10 @@ public class Game implements Runnable{
     }
 
 
-    private void tick(){}
+    private void tick(){
+        if(StateManager.getCurrentState()!=null)
+            StateManager.getCurrentState().tick();
+    }
 
     private void render(){
         bufferStrategy=display.getCanvas().getBufferStrategy();
@@ -91,6 +106,9 @@ public class Game implements Runnable{
         g.clearRect(0,0,width,height);
 
         //Draw Here
+
+        if(StateManager.getCurrentState()!=null)
+            StateManager.getCurrentState().render(g);
 
 
         //End

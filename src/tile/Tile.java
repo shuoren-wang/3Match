@@ -10,7 +10,8 @@ import java.awt.image.BufferedImage;
  */
 public class Tile {
 
-    public static final int WIDTH=20,HEIGHT=20;
+    public static final int WIDTH=60,HEIGHT=60;
+    public static Tile[] tiles=new Tile[50];
     public static Tile grassTile=new Tile(Assets.grass,0);
     public static Tile dirtTile=new Tile(Assets.dirt,1);
     public static Tile stoneTile=new Tile(Assets.stone,2);
@@ -20,11 +21,13 @@ public class Tile {
 
 
     private BufferedImage texture;
-    public int id;
+    private int id;
 
     public Tile(BufferedImage texture, int id){
         this.texture=texture;
         this.id=id;
+
+        tiles[id]=this;
     }
 
     public void tick(){}
@@ -33,4 +36,17 @@ public class Tile {
         g.drawImage(texture,x,y,WIDTH,HEIGHT,null);
     }
 
+
+    //GETTER and SETTER
+    public BufferedImage getTexture() {
+        return texture;
+    }
+
+    public void setTexture(BufferedImage texture) {
+        this.texture = texture;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
